@@ -14,16 +14,31 @@
 
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
+  /* ── HS효성 서체 ─────────────────────────────
+     저장소에 fonts/ 폴더를 만들고 woff2 두 개를 넣어주세요.
+     파일이 없으면 자동으로 Pretendard로 표시됩니다. */
+  @font-face{
+    font-family:'HS Hyosung';
+    src:url('/fonts/HSHyosung-Regular.woff2') format('woff2');
+    font-weight:400; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'HS Hyosung';
+    src:url('/fonts/HSHyosung-Bold.woff2') format('woff2');
+    font-weight:700; font-style:normal; font-display:swap;
+  }
+
   :root{
     --ground:#E7E9EA; --paper:#FFFFFF; --ink:#131618; --ink-2:#5E6469;
     --ink-3:#8A9095; --line:#D5D8DA; --accent:#123B47; --accent-soft:#E3ECEF;
     --radius:14px; --pad:20px; --maxw:560px;
-    --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+    --sans:'HS Hyosung','Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    --mono:'HS Hyosung','Pretendard Variable',Pretendard,system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
   body{
-    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    font-family:var(--sans);
     background:var(--ground);color:var(--ink);line-height:1.55;
     -webkit-font-smoothing:antialiased;padding-bottom:96px;
   }
@@ -36,7 +51,7 @@
   header{padding:34px 0 26px}
   .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;display:flex;align-items:center;gap:9px}
   .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
-  h1{font-size:31px;font-weight:800;letter-spacing:-0.045em;line-height:1.2;margin-top:14px}
+  h1{font-size:31px;font-weight:700;letter-spacing:-0.045em;line-height:1.2;margin-top:14px}
   h1 em{font-style:normal;color:var(--ink-3)}
   .lede{margin-top:12px;font-size:14.5px;color:var(--ink-2);letter-spacing:-0.015em;max-width:33em}
 
@@ -51,36 +66,43 @@
   .plate{position:relative;aspect-ratio:16/10;background:linear-gradient(148deg,#2A3237 0%,#171C20 55%,#0E1214 100%);display:flex;align-items:flex-end;padding:16px;overflow:hidden}
   .plate::before{content:"";position:absolute;inset:0;background:linear-gradient(74deg,transparent 38%,rgba(255,255,255,.09) 46%,transparent 54%)}
   .plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
-  .plate-model{position:relative;color:rgba(255,255,255,.94);font-size:23px;font-weight:800;letter-spacing:-0.04em}
+  .plate-model{position:relative;color:rgba(255,255,255,.94);font-size:23px;font-weight:700;letter-spacing:-0.04em}
   .badge{position:absolute;top:13px;left:13px;z-index:2;background:rgba(255,255,255,.94);color:var(--accent);font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:100px}
 
   .body{padding:var(--pad)}
+  .name-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
   .name{font-size:18.5px;font-weight:700;letter-spacing:-0.035em}
+  .plateno{
+    font-family:var(--mono);font-size:12px;color:var(--ink-2);
+    background:#F1F3F4;border:1px solid var(--line);border-radius:5px;
+    padding:3px 8px;white-space:nowrap;letter-spacing:0;flex:0 0 auto;
+  }
   .comment{margin-top:7px;font-size:14px;color:var(--ink-2);letter-spacing:-0.015em}
 
   .specs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:1px solid var(--line)}
-  .spec{padding:11px 0 2px;border-right:1px solid var(--line)}
-  .spec:last-child{border-right:0}
+  .spec{padding:11px 10px 4px 0;border-right:1px solid var(--line)}
+  .spec:last-child{border-right:0;padding-right:0}
   .spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
-  .spec dd{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;margin-top:3px;font-variant-numeric:tabular-nums}
-  .spec dd small{font-size:11px;font-weight:500;color:var(--ink-2)}
+  .spec dd{font-family:var(--mono);font-size:15px;font-weight:700;letter-spacing:-0.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+  .spec dd small{font-size:11px;font-weight:400;color:var(--ink-2)}
+  .spec dd.txt{font-size:12.5px;font-weight:400;line-height:1.4;letter-spacing:-0.025em}
 
   .price-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
   .price{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:-0.045em;font-variant-numeric:tabular-nums}
-  .price span{font-size:14px;font-weight:500;margin-left:2px}
-  .perk{font-size:11.5px;color:var(--accent);background:var(--accent-soft);padding:5px 9px;border-radius:6px;font-weight:600;white-space:nowrap}
+  .price span{font-size:14px;font-weight:400;margin-left:2px}
+  .perk{font-size:11.5px;color:var(--accent);background:var(--accent-soft);padding:5px 9px;border-radius:6px;font-weight:700;white-space:nowrap}
 
   .more{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
   .more.open{max-height:900px}
   .more-inner{padding-top:16px;margin-top:15px;border-top:1px solid var(--line)}
   .detail{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:13.5px;letter-spacing:-0.015em}
   .detail dt{color:var(--ink-3)}
-  .detail dd{text-align:right;font-weight:500}
+  .detail dd{text-align:right}
   .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
   .gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:7px;background:#1B2126}
 
   .actions{display:flex;gap:8px;margin-top:16px}
-  button{font-family:inherit;font-size:14px;font-weight:600;letter-spacing:-0.02em;cursor:pointer;border-radius:9px;padding:12px 14px;transition:opacity .15s}
+  button{font-family:inherit;font-size:14px;font-weight:700;letter-spacing:-0.02em;cursor:pointer;border-radius:9px;padding:12px 14px;transition:opacity .15s}
   button:active{opacity:.7}
   .btn-primary{flex:1;background:var(--accent);color:#fff;border:0}
   .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
@@ -104,17 +126,16 @@
   .sheet-bg.open{opacity:1;pointer-events:auto}
   .sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--paper);border-radius:18px 18px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));max-width:var(--maxw);margin:0 auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.8,.3,1);max-height:88vh;overflow-y:auto}
   .sheet.open{transform:none}
-  .sheet h2{font-size:19px;font-weight:800;letter-spacing:-0.04em}
+  .sheet h2{font-size:19px;font-weight:700;letter-spacing:-0.04em}
   .sheet .sub{margin-top:6px;font-size:13.5px;color:var(--ink-2);letter-spacing:-0.015em}
-  label{display:block;margin-top:16px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  label{display:block;margin-top:16px;font-size:12px;font-weight:700;color:var(--ink-2)}
   input,textarea{width:100%;margin-top:6px;padding:12px 13px;font-family:inherit;font-size:15px;letter-spacing:-0.02em;border:1px solid var(--line);border-radius:9px;background:#FAFBFB;color:var(--ink)}
   input:focus,textarea:focus{outline:none;border-color:var(--accent);background:#fff}
+  input:disabled{background:#F1F3F4;color:var(--ink-2)}
   textarea{resize:none;height:76px}
   .consent{margin-top:16px;font-size:11.5px;color:var(--ink-3);line-height:1.6}
   .done{text-align:center;padding:22px 0 10px}
   .done .mark{width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 14px;font-size:22px}
-  .relink{margin-top:14px;font-size:11.5px;color:var(--ink-3);text-align:center}
-  .relink a{color:var(--accent);cursor:pointer;text-decoration:underline}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
 </style>
 </head>
@@ -161,6 +182,12 @@
   <div id="sheetForm">
     <h2 id="sheetTitle">문의 남기기</h2>
     <p class="sub" id="sheetSub">연락처만 남겨주시면 담당자가 확인 후 연락드립니다.</p>
+
+    <div id="carLockWrap">
+      <label for="f-plate">차량번호</label>
+      <input id="f-plate" type="text" disabled>
+    </div>
+
     <label for="f-name">이름</label>
     <input id="f-name" type="text" placeholder="홍길동">
     <label for="f-tel">연락처</label>
@@ -212,13 +239,12 @@
    ══════════════════════════════════════════════ */
 const API = 'https://script.google.com/macros/s/AKfycbwE8DVkS0ggi0s2hScU7hd69py5JXHnWcNbnj8DYr0iCcXGhSBUHBitFH_J9cRrwh3bFQ/exec';
 
-const CACHE_KEY = 'hstc_cars_v1', CACHE_MIN = 5;
+const CACHE_KEY = 'hstc_cars_v2', CACHE_MIN = 5;
 const ME_KEY    = 'hstc_referrer';
 
 const params = new URLSearchParams(location.search);
 const ref = params.get('ref') || '';
 
-/* '중고차운영팀|정은동' → '중고차운영팀 정은동' */
 function pretty(v){ return String(v || '').replace('|', ' '); }
 function myRef(){ try { return localStorage.getItem(ME_KEY) || ''; } catch(e){ return ''; } }
 
@@ -234,6 +260,14 @@ document.getElementById('weekLabel').textContent =
 const won = n => Number(n||0).toLocaleString('ko-KR');
 const pic = (id, w) => 'https://lh3.googleusercontent.com/d/' + id + '=w' + w;
 let CARS = [];
+
+/* 외장 / 내장 색상 표기 */
+function colorText(c){
+  const out = String(c.외장색상 || '').trim();
+  const inn = String(c.내장색상 || '').trim();
+  if (out && inn) return out + ' / ' + inn;
+  return out || inn || '–';
+}
 
 /* ── 매물 불러오기 (5분 캐시) ───────────────── */
 (function load(){
@@ -269,7 +303,6 @@ function render(){
     const el = document.createElement('article');
     el.className = 'card';
     el.style.animationDelay = (i*55) + 'ms';
-    const km = c.주행 ? (c.주행/10000).toFixed(1) : '–';
     const gallery = (c.photos||[]).slice(1,4)
       .map(id => `<img src="${pic(id,400)}" loading="lazy" alt="">`).join('');
 
@@ -282,13 +315,16 @@ function render(){
         <span class="plate-model">${c.차명}</span>
       </div>
       <div class="body">
-        <h2 class="name">${c.차명}</h2>
+        <div class="name-row">
+          <h2 class="name">${c.차명}</h2>
+          ${c.차량번호 ? `<span class="plateno">${c.차량번호}</span>` : ''}
+        </div>
         ${c.코멘트 ? `<p class="comment">${c.코멘트}</p>` : ''}
 
         <dl class="specs">
           <div class="spec"><dt>Year</dt><dd>${c.연식 || '–'}</dd></div>
-          <div class="spec"><dt>Mileage</dt><dd>${km}<small>만km</small></dd></div>
-          <div class="spec"><dt>Warranty</dt><dd style="font-size:13.5px">~${c.보증만료 || '–'}</dd></div>
+          <div class="spec"><dt>Mileage</dt><dd>${won(c.주행)}<small>km</small></dd></div>
+          <div class="spec"><dt>Color</dt><dd class="txt">${colorText(c)}</dd></div>
         </dl>
 
         <div class="price-row">
@@ -299,8 +335,10 @@ function render(){
         <div class="more" id="more-${i}">
           <div class="more-inner">
             <dl>
+              <div class="detail"><dt>차량번호</dt><dd>${c.차량번호 || '–'}</dd></div>
               <div class="detail"><dt>주행거리</dt><dd>${won(c.주행)} km</dd></div>
-              <div class="detail"><dt>보증</dt><dd>벤츠 보증 ${c.보증만료 || '–'}까지</dd></div>
+              <div class="detail"><dt>외장 색상</dt><dd>${c.외장색상 || '–'}</dd></div>
+              <div class="detail"><dt>내장 색상</dt><dd>${c.내장색상 || '–'}</dd></div>
               <div class="detail"><dt>전시 지점</dt><dd>${c.지점 || '–'}점</dd></div>
             </dl>
             ${gallery ? `<div class="gallery">${gallery}</div>` : ''}
@@ -326,19 +364,24 @@ function openSheet(i){
   document.getElementById('sheetForm').hidden = false;
   document.getElementById('sheetDone').hidden = true;
 
+  const lock = document.getElementById('carLockWrap');
+
   if (i === null){
     document.getElementById('sheetTitle').textContent = '원하는 차 알려주기';
     document.getElementById('sheetSub').textContent = '찾으시는 모델과 예산을 남겨주시면 입고 시 먼저 연락드립니다.';
     document.getElementById('f-car').value = '';
+    document.getElementById('f-plate').value = '';
+    lock.hidden = true;
   } else {
+    const c = CARS[i];
     document.getElementById('sheetTitle').textContent = '문의 남기기';
-    document.getElementById('sheetSub').textContent = CARS[i].차명 + ' 차량으로 문의를 남깁니다.';
-    document.getElementById('f-car').value = CARS[i].차명;
+    document.getElementById('sheetSub').textContent = c.차명 + ' 차량으로 문의를 남깁니다.';
+    document.getElementById('f-car').value = c.차명;
+    document.getElementById('f-plate').value = c.차량번호 || '';
+    lock.hidden = !c.차량번호;
   }
 
-  /* 소개 링크로 들어왔으면 자동으로 채워둡니다 (수정 가능) */
   document.getElementById('f-ref').value = pretty(ref || myRef());
-
   document.getElementById('sheetBg').classList.add('open');
   document.getElementById('sheet').classList.add('open');
 }
@@ -353,19 +396,22 @@ function submitLead(){
   const tel  = document.getElementById('f-tel').value.trim();
   if (!name || !tel) return alert('이름과 연락처를 입력해 주세요.');
 
-  const refVal = document.getElementById('f-ref').value.trim() || ref || '';
+  const refVal  = document.getElementById('f-ref').value.trim() || ref || '';
+  const plate   = document.getElementById('f-plate').value.trim();
+  const carName = document.getElementById('f-car').value.trim();
+  /* 차량번호는 시트의 별도 열로 들어갑니다 */
 
   const btn = document.getElementById('btnSend');
   btn.disabled = true; btn.textContent = '보내는 중…';
 
-  /* Content-Type을 text/plain으로 보내야 GAS에서 preflight 없이 받습니다 */
   fetch(API, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       name: name,
       tel: tel,
-      car: document.getElementById('f-car').value.trim(),
+      car: carName,
+      plate: plate,
       memo: document.getElementById('f-memo').value.trim(),
       ref: refVal
     })
