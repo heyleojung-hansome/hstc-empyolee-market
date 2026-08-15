@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HSTC 인증중고차 · 임직원 매물</title>
+
+<!-- 카톡·문자 미리보기용. og:image는 반드시 절대경로 1200×630 -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="HSTC 인증중고차 · 이번 주 매물">
+<meta property="og:description" content="벤츠 인증중고차 임직원·소개 고객 안내">
+<meta property="og:image" content="https://hstcemployeemarket-55cxh4tlc-leo-jung-s-projects.vercel.app/file.jpg">
+<meta name="theme-color" content="#E7E9EA">
+
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --ground:#E7E9EA; --paper:#FFFFFF; --ink:#131618; --ink-2:#5E6469;
+    --ink-3:#8A9095; --line:#D5D8DA; --accent:#123B47; --accent-soft:#E3ECEF;
+    --radius:14px; --pad:20px; --maxw:560px;
+    --mono:'SFMono-Regular',ui-monospace,'JetBrains Mono',Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    background:var(--ground);color:var(--ink);line-height:1.55;
+    -webkit-font-smoothing:antialiased;padding-bottom:96px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+  .ref-ribbon{background:var(--accent);color:#fff;padding:11px 16px;text-align:center;font-size:13.5px;letter-spacing:-0.01em}
+  .ref-ribbon strong{font-weight:700}
+  .ref-ribbon[hidden]{display:none}
+
+  header{padding:34px 0 26px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink-3);text-transform:uppercase;display:flex;align-items:center;gap:9px}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line)}
+  h1{font-size:31px;font-weight:800;letter-spacing:-0.045em;line-height:1.2;margin-top:14px}
+  h1 em{font-style:normal;color:var(--ink-3)}
+  .lede{margin-top:12px;font-size:14.5px;color:var(--ink-2);letter-spacing:-0.015em;max-width:33em}
+
+  .list{display:flex;flex-direction:column;gap:14px}
+  .card{
+    background:var(--paper);border-radius:var(--radius);overflow:hidden;
+    border:1px solid var(--line);opacity:0;transform:translateY(10px);
+    animation:rise .5s cubic-bezier(.22,.8,.3,1) forwards;
+  }
+  @keyframes rise{to{opacity:1;transform:none}}
+
+  .plate{position:relative;aspect-ratio:16/10;background:linear-gradient(148deg,#2A3237 0%,#171C20 55%,#0E1214 100%);display:flex;align-items:flex-end;padding:16px;overflow:hidden}
+  .plate::before{content:"";position:absolute;inset:0;background:linear-gradient(74deg,transparent 38%,rgba(255,255,255,.09) 46%,transparent 54%)}
+  .plate img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .plate-model{position:relative;color:rgba(255,255,255,.94);font-size:23px;font-weight:800;letter-spacing:-0.04em}
+  .badge{position:absolute;top:13px;left:13px;z-index:2;background:rgba(255,255,255,.94);color:var(--accent);font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:100px}
+
+  .body{padding:var(--pad)}
+  .name{font-size:18.5px;font-weight:700;letter-spacing:-0.035em}
+  .comment{margin-top:7px;font-size:14px;color:var(--ink-2);letter-spacing:-0.015em}
+
+  .specs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:16px;border-top:1px solid var(--line)}
+  .spec{padding:11px 0 2px;border-right:1px solid var(--line)}
+  .spec:last-child{border-right:0}
+  .spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase}
+  .spec dd{font-family:var(--mono);font-size:15px;font-weight:600;letter-spacing:-0.02em;margin-top:3px;font-variant-numeric:tabular-nums}
+  .spec dd small{font-size:11px;font-weight:500;color:var(--ink-2)}
+
+  .price-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
+  .price{font-family:var(--mono);font-size:24px;font-weight:700;letter-spacing:-0.045em;font-variant-numeric:tabular-nums}
+  .price span{font-size:14px;font-weight:500;margin-left:2px}
+  .perk{font-size:11.5px;color:var(--accent);background:var(--accent-soft);padding:5px 9px;border-radius:6px;font-weight:600;white-space:nowrap}
+
+  .more{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
+  .more.open{max-height:900px}
+  .more-inner{padding-top:16px;margin-top:15px;border-top:1px solid var(--line)}
+  .detail{display:flex;justify-content:space-between;gap:16px;padding:7px 0;font-size:13.5px;letter-spacing:-0.015em}
+  .detail dt{color:var(--ink-3)}
+  .detail dd{text-align:right;font-weight:500}
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:14px}
+  .gallery img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:7px;background:#1B2126}
+
+  .actions{display:flex;gap:8px;margin-top:16px}
+  button{font-family:inherit;font-size:14px;font-weight:600;letter-spacing:-0.02em;cursor:pointer;border-radius:9px;padding:12px 14px;transition:opacity .15s}
+  button:active{opacity:.7}
+  .btn-primary{flex:1;background:var(--accent);color:#fff;border:0}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost.wide{flex:1}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .request{margin-top:26px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad)}
+  .request h2{font-size:16.5px;font-weight:700;letter-spacing:-0.03em}
+  .request p{margin:8px 0 15px;font-size:13.5px;color:var(--ink-2);letter-spacing:-0.015em}
+
+  .state{padding:40px 0;text-align:center;font-size:13.5px;color:var(--ink-3);letter-spacing:-0.015em}
+
+  footer{padding:30px 0 20px;font-size:12px;color:var(--ink-3);letter-spacing:-0.01em;line-height:1.7}
+  footer hr{border:0;border-top:1px solid var(--line);margin-bottom:16px}
+
+  .sharebar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(231,233,234,.93);backdrop-filter:saturate(160%) blur(12px);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+  .sharebar .wrap{padding:0;display:flex;gap:8px;align-items:center}
+  .sharebar-text{flex:1;font-size:12.5px;color:var(--ink-2);letter-spacing:-0.015em}
+
+  .sheet-bg{position:fixed;inset:0;background:rgba(19,22,24,.5);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+  .sheet-bg.open{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:51;background:var(--paper);border-radius:18px 18px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));max-width:var(--maxw);margin:0 auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.22,.8,.3,1);max-height:88vh;overflow-y:auto}
+  .sheet.open{transform:none}
+  .sheet h2{font-size:19px;font-weight:800;letter-spacing:-0.04em}
+  .sheet .sub{margin-top:6px;font-size:13.5px;color:var(--ink-2);letter-spacing:-0.015em}
+  label{display:block;margin-top:16px;font-size:12px;font-weight:600;color:var(--ink-2)}
+  input,textarea{width:100%;margin-top:6px;padding:12px 13px;font-family:inherit;font-size:15px;letter-spacing:-0.02em;border:1px solid var(--line);border-radius:9px;background:#FAFBFB;color:var(--ink)}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent);background:#fff}
+  textarea{resize:none;height:76px}
+  .consent{margin-top:16px;font-size:11.5px;color:var(--ink-3);line-height:1.6}
+  .done{text-align:center;padding:22px 0 10px}
+  .done .mark{width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 14px;font-size:22px}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="ref-ribbon" id="refRibbon" hidden>
+  <strong id="refName"></strong>님이 보내주신 매물입니다
+</div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">HSTC 인증중고차</div>
+    <h1>이번 주 매물<br><em id="weekLabel"></em></h1>
+    <p class="lede">벤츠 인증중고차 전 차량 정밀진단 후 등록합니다. 관심 있는 차가 있으면 문의를 남겨주세요. 주변에 알아보는 분이 있다면 링크를 그대로 전달하셔도 됩니다.</p>
+  </header>
+
+  <main class="list" id="list">
+    <div class="state">매물을 불러오는 중…</div>
+  </main>
+
+  <section class="request">
+    <h2>찾는 차가 목록에 없나요</h2>
+    <p>모델과 예산을 남겨주시면 입고되는 대로 먼저 연락드립니다. 지인분이 알아보는 차도 같이 찾아드립니다.</p>
+    <button class="btn-ghost wide" onclick="openSheet(null)">원하는 차 알려주기</button>
+  </section>
+
+  <footer>
+    <hr>
+    임직원 및 소개 고객 혜택은 계약 시 재직 확인 후 적용됩니다. 차량 상태와 가격은 실시간 재고에 따라 달라질 수 있습니다.<br>
+    중고차운영팀 · HS효성 더클래스
+  </footer>
+</div>
+
+<div class="sharebar">
+  <div class="wrap">
+    <div class="sharebar-text">알아보는 지인이 있다면</div>
+    <button class="btn-primary" style="flex:0 0 auto" onclick="sharePage()">링크 전달하기</button>
+  </div>
+</div>
+
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div id="sheetForm">
+    <h2 id="sheetTitle">문의 남기기</h2>
+    <p class="sub" id="sheetSub">연락처만 남겨주시면 담당자가 확인 후 연락드립니다.</p>
+    <label for="f-name">이름</label>
+    <input id="f-name" type="text" placeholder="홍길동">
+    <label for="f-tel">연락처</label>
+    <input id="f-tel" type="tel" inputmode="numeric" placeholder="010-0000-0000">
+    <label for="f-car">관심 차량</label>
+    <input id="f-car" type="text" placeholder="모델명 또는 원하는 조건">
+    <label for="f-memo">남기실 말 (선택)</label>
+    <textarea id="f-memo" placeholder="연락 가능한 시간대, 예산 등"></textarea>
+    <div class="actions">
+      <button class="btn-ghost" onclick="closeSheet()">닫기</button>
+      <button class="btn-primary" id="btnSend" onclick="submitLead()">문의 보내기</button>
+    </div>
+    <p class="consent">남겨주신 정보는 차량 상담 목적으로만 사용하며, 상담 종료 후 파기합니다.</p>
+  </div>
+
+  <div id="sheetDone" hidden>
+    <div class="done">
+      <div class="mark">✓</div>
+      <h2>문의를 보냈습니다</h2>
+      <p class="sub" id="doneSub">담당자가 확인 후 영업일 기준 하루 안에 연락드립니다.</p>
+    </div>
+    <div class="actions">
+      <button class="btn-primary wide" onclick="closeSheet()">확인</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   여기 한 줄만 바꾸면 연결됩니다.
+   GAS [스크립트 A] 웹앱 배포 주소 (.../exec)
+   ══════════════════════════════════════════════ */
+const API = 'https://script.google.com/macros/s/AKfycbwE8DVkS0ggi0s2hScU7hd69py5JXHnWcNbnj8DYr0iCcXGhSBUHBitFH_J9cRrwh3bFQ/exec
+';
+
+const CACHE_KEY = 'hstc_cars_v1', CACHE_MIN = 5;
+
+const params = new URLSearchParams(location.search);
+const ref = params.get('ref');
+if (ref) {
+  document.getElementById('refName').textContent = ref;
+  document.getElementById('refRibbon').hidden = false;
+}
+
+const now = new Date();
+document.getElementById('weekLabel').textContent =
+  (now.getMonth()+1) + '월 ' + Math.ceil(now.getDate()/7) + '주';
+
+const won = n => Number(n||0).toLocaleString('ko-KR');
+const pic = (id, w) => 'https://lh3.googleusercontent.com/d/' + id + '=w' + w;
+let CARS = [];
+
+/* ── 매물 불러오기 (5분 캐시) ───────────────── */
+(function load(){
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (c && Date.now() - c.t < CACHE_MIN*60*1000) { CARS = c.d; render(); }
+  } catch(e){}
+
+  fetch(API)
+    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error(r.error);
+      CARS = r.cars;
+      try { localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), d:CARS})); } catch(e){}
+      render();
+    })
+    .catch(() => {
+      if (!CARS.length) {
+        document.getElementById('list').innerHTML =
+          '<div class="state">매물을 불러오지 못했습니다.<br>잠시 후 다시 열어주세요.</div>';
+      }
+    });
+})();
+
+function render(){
+  const list = document.getElementById('list');
+  if (!CARS.length){
+    list.innerHTML = '<div class="state">이번 주 등록된 매물이 없습니다.<br>아래에서 찾으시는 차를 알려주세요.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  CARS.forEach((c, i) => {
+    const el = document.createElement('article');
+    el.className = 'card';
+    el.style.animationDelay = (i*55) + 'ms';
+    const km = c.주행 ? (c.주행/10000).toFixed(1) : '–';
+    const gallery = (c.photos||[]).slice(1,4)
+      .map(id => `<img src="${pic(id,400)}" loading="lazy" alt="">`).join('');
+
+    el.innerHTML = `
+      <div class="plate">
+        ${c.태그 ? `<span class="badge">${c.태그}</span>` : ''}
+        ${c.photos && c.photos[0]
+          ? `<img src="${pic(c.photos[0],800)}" alt="${c.차명}" loading="${i<2?'eager':'lazy'}"
+                  onerror="this.remove()">` : ''}
+        <span class="plate-model">${c.차명}</span>
+      </div>
+      <div class="body">
+        <h2 class="name">${c.차명}</h2>
+        ${c.코멘트 ? `<p class="comment">${c.코멘트}</p>` : ''}
+
+        <dl class="specs">
+          <div class="spec"><dt>Year</dt><dd>${c.연식 || '–'}</dd></div>
+          <div class="spec"><dt>Mileage</dt><dd>${km}<small>만km</small></dd></div>
+          <div class="spec"><dt>Warranty</dt><dd style="font-size:13.5px">~${c.보증만료 || '–'}</dd></div>
+        </dl>
+
+        <div class="price-row">
+          <div class="price">${won(c.가격)}<span>만원</span></div>
+          <div class="perk">임직원 · 소개 혜택 적용</div>
+        </div>
+
+        <div class="more" id="more-${i}">
+          <div class="more-inner">
+            <dl>
+              <div class="detail"><dt>주행거리</dt><dd>${won(c.주행)} km</dd></div>
+              <div class="detail"><dt>보증</dt><dd>벤츠 보증 ${c.보증만료 || '–'}까지</dd></div>
+              <div class="detail"><dt>전시 지점</dt><dd>${c.지점 || '–'}점</dd></div>
+            </dl>
+            ${gallery ? `<div class="gallery">${gallery}</div>` : ''}
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn-ghost" onclick="toggleMore(${i}, this)">상세정보</button>
+          <button class="btn-primary" onclick="openSheet(${i})">문의하기</button>
+        </div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function toggleMore(i, btn){
+  const open = document.getElementById('more-'+i).classList.toggle('open');
+  btn.textContent = open ? '접기' : '상세정보';
+}
+
+/* ── 문의 ──────────────────────────────────── */
+let current = null;
+function openSheet(i){
+  current = i;
+  document.getElementById('sheetForm').hidden = false;
+  document.getElementById('sheetDone').hidden = true;
+  if (i === null){
+    document.getElementById('sheetTitle').textContent = '원하는 차 알려주기';
+    document.getElementById('sheetSub').textContent = '찾으시는 모델과 예산을 남겨주시면 입고 시 먼저 연락드립니다.';
+    document.getElementById('f-car').value = '';
+  } else {
+    document.getElementById('sheetTitle').textContent = '문의 남기기';
+    document.getElementById('sheetSub').textContent = CARS[i].차명 + ' 차량으로 문의를 남깁니다.';
+    document.getElementById('f-car').value = CARS[i].차명;
+  }
+  document.getElementById('sheetBg').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+}
+
+function closeSheet(){
+  document.getElementById('sheetBg').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+}
+
+function submitLead(){
+  const name = document.getElementById('f-name').value.trim();
+  const tel  = document.getElementById('f-tel').value.trim();
+  if (!name || !tel) return alert('이름과 연락처를 입력해 주세요.');
+
+  const btn = document.getElementById('btnSend');
+  btn.disabled = true; btn.textContent = '보내는 중…';
+
+  /* Content-Type을 text/plain으로 보내야 GAS에서 preflight 없이 받습니다 */
+  fetch(API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      name: name,
+      tel: tel,
+      car: document.getElementById('f-car').value.trim(),
+      memo: document.getElementById('f-memo').value.trim(),
+      ref: ref || ''
+    })
+  })
+  .then(r => r.json())
+  .then(r => {
+    if (!r.ok) throw new Error(r.error);
+    document.getElementById('doneSub').textContent = ref
+      ? ref + '님께도 진행 상황을 알려드립니다.'
+      : '담당자가 확인 후 영업일 기준 하루 안에 연락드립니다.';
+    document.getElementById('sheetForm').hidden = true;
+    document.getElementById('sheetDone').hidden = false;
+  })
+  .catch(() => alert('전송에 실패했습니다. 잠시 후 다시 시도해 주세요.'))
+  .finally(() => { btn.disabled = false; btn.textContent = '문의 보내기'; });
+}
+
+function sharePage(){
+  const url = location.origin + location.pathname + (ref ? '?ref=' + encodeURIComponent(ref) : '');
+  const data = { title:'HSTC 인증중고차 · 이번 주 매물', url:url };
+  if (navigator.share) navigator.share(data).catch(()=>{});
+  else navigator.clipboard.writeText(url).then(()=>alert('링크를 복사했습니다.'));
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+</script>
+</body>
+</html>
