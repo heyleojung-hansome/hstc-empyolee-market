@@ -113,6 +113,8 @@
   .consent{margin-top:16px;font-size:11.5px;color:var(--ink-3);line-height:1.6}
   .done{text-align:center;padding:22px 0 10px}
   .done .mark{width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 14px;font-size:22px}
+  .relink{margin-top:14px;font-size:11.5px;color:var(--ink-3);text-align:center}
+  .relink a{color:var(--accent);cursor:pointer;text-decoration:underline}
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.card{opacity:1;transform:none}}
 </style>
 </head>
@@ -153,6 +155,7 @@
   </div>
 </div>
 
+<!-- 문의 시트 -->
 <div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true">
   <div id="sheetForm">
@@ -187,19 +190,40 @@
   </div>
 </div>
 
+<!-- 소개자 정보 시트 -->
+<div class="sheet-bg" id="refSheetBg" onclick="closeRefSheet()"></div>
+<div class="sheet" id="refSheet" role="dialog" aria-modal="true">
+  <h2>소개자 정보</h2>
+  <p class="sub">누가 전달한 링크인지 확인하기 위한 정보입니다. 한 번만 입력하면 다음부터는 묻지 않습니다.</p>
+  <label for="r-team">소속</label>
+  <input id="r-team" type="text" placeholder="중고차운영팀">
+  <label for="r-name">이름</label>
+  <input id="r-name" type="text" placeholder="홍길동">
+  <div class="actions">
+    <button class="btn-ghost" onclick="closeRefSheet()">닫기</button>
+    <button class="btn-primary" onclick="saveRefAndShare()">링크 만들기</button>
+  </div>
+  <p class="consent">입력하신 정보는 소개 건 확인 용도로만 사용됩니다.</p>
+</div>
+
 <script>
 /* ══════════════════════════════════════════════
-   여기 한 줄만 바꾸면 연결됩니다.
    GAS [스크립트 A] 웹앱 배포 주소 (.../exec)
    ══════════════════════════════════════════════ */
 const API = 'https://script.google.com/macros/s/AKfycbwE8DVkS0ggi0s2hScU7hd69py5JXHnWcNbnj8DYr0iCcXGhSBUHBitFH_J9cRrwh3bFQ/exec';
 
 const CACHE_KEY = 'hstc_cars_v1', CACHE_MIN = 5;
+const ME_KEY    = 'hstc_referrer';
 
 const params = new URLSearchParams(location.search);
-const ref = params.get('ref');
+const ref = params.get('ref') || '';
+
+/* '중고차운영팀|정은동' → '중고차운영팀 정은동' */
+function pretty(v){ return String(v || '').replace('|', ' '); }
+function myRef(){ try { return localStorage.getItem(ME_KEY) || ''; } catch(e){ return ''; } }
+
 if (ref) {
-  document.getElementById('refName').textContent = ref;
+  document.getElementById('refName').textContent = pretty(ref);
   document.getElementById('refRibbon').hidden = false;
 }
 
@@ -298,11 +322,10 @@ function toggleMore(i, btn){
 }
 
 /* ── 문의 ──────────────────────────────────── */
-let current = null;
 function openSheet(i){
-  current = i;
   document.getElementById('sheetForm').hidden = false;
   document.getElementById('sheetDone').hidden = true;
+
   if (i === null){
     document.getElementById('sheetTitle').textContent = '원하는 차 알려주기';
     document.getElementById('sheetSub').textContent = '찾으시는 모델과 예산을 남겨주시면 입고 시 먼저 연락드립니다.';
@@ -312,6 +335,10 @@ function openSheet(i){
     document.getElementById('sheetSub').textContent = CARS[i].차명 + ' 차량으로 문의를 남깁니다.';
     document.getElementById('f-car').value = CARS[i].차명;
   }
+
+  /* 소개 링크로 들어왔으면 자동으로 채워둡니다 (수정 가능) */
+  document.getElementById('f-ref').value = pretty(ref || myRef());
+
   document.getElementById('sheetBg').classList.add('open');
   document.getElementById('sheet').classList.add('open');
 }
@@ -326,6 +353,8 @@ function submitLead(){
   const tel  = document.getElementById('f-tel').value.trim();
   if (!name || !tel) return alert('이름과 연락처를 입력해 주세요.');
 
+  const refVal = document.getElementById('f-ref').value.trim() || ref || '';
+
   const btn = document.getElementById('btnSend');
   btn.disabled = true; btn.textContent = '보내는 중…';
 
@@ -338,14 +367,14 @@ function submitLead(){
       tel: tel,
       car: document.getElementById('f-car').value.trim(),
       memo: document.getElementById('f-memo').value.trim(),
-      ref: ref || ''
+      ref: refVal
     })
   })
   .then(r => r.json())
   .then(r => {
     if (!r.ok) throw new Error(r.error);
-    document.getElementById('doneSub').textContent = ref
-      ? ref + '님께도 진행 상황을 알려드립니다.'
+    document.getElementById('doneSub').textContent = refVal
+      ? pretty(refVal) + '님께도 진행 상황을 알려드립니다.'
       : '담당자가 확인 후 영업일 기준 하루 안에 연락드립니다.';
     document.getElementById('sheetForm').hidden = true;
     document.getElementById('sheetDone').hidden = false;
@@ -354,14 +383,49 @@ function submitLead(){
   .finally(() => { btn.disabled = false; btn.textContent = '문의 보내기'; });
 }
 
+/* ── 링크 전달 ─────────────────────────────── */
 function sharePage(){
-  const url = location.origin + location.pathname + (ref ? '?ref=' + encodeURIComponent(ref) : '');
+  const mine = ref || myRef();
+  if (!mine) return openRefSheet();
+  doShare(mine);
+}
+
+function doShare(who){
+  const url = location.origin + location.pathname + '?ref=' + encodeURIComponent(who);
   const data = { title:'HSTC 인증중고차 · 이번 주 매물', url:url };
   if (navigator.share) navigator.share(data).catch(()=>{});
   else navigator.clipboard.writeText(url).then(()=>alert('링크를 복사했습니다.'));
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+function openRefSheet(){
+  const saved = myRef();
+  if (saved){
+    const p = saved.split('|');
+    document.getElementById('r-team').value = p[0] || '';
+    document.getElementById('r-name').value = p[1] || '';
+  }
+  document.getElementById('refSheetBg').classList.add('open');
+  document.getElementById('refSheet').classList.add('open');
+}
+
+function closeRefSheet(){
+  document.getElementById('refSheetBg').classList.remove('open');
+  document.getElementById('refSheet').classList.remove('open');
+}
+
+function saveRefAndShare(){
+  const team = document.getElementById('r-team').value.trim();
+  const name = document.getElementById('r-name').value.trim();
+  if (!team || !name) return alert('소속과 이름을 입력해 주세요.');
+  const who = team + '|' + name;
+  try { localStorage.setItem(ME_KEY, who); } catch(e){}
+  closeRefSheet();
+  doShare(who);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ closeSheet(); closeRefSheet(); }
+});
 </script>
 </body>
 </html>
