@@ -113,6 +113,36 @@
   .request h2{font-size:16.5px;font-weight:700;letter-spacing:-0.03em}
   .request p{margin:8px 0 15px;font-size:13.5px;color:var(--ink-2);letter-spacing:-0.015em}
 
+  .sellbar{
+    display:block;width:100%;text-align:left;
+    margin-top:14px;padding:22px 20px;border-radius:var(--radius);
+    background:var(--accent);border:0;color:#fff;
+    font-weight:400;position:relative;overflow:hidden;
+  }
+  .sellbar::after{
+    content:"";position:absolute;right:-40px;top:-40px;
+    width:170px;height:170px;border-radius:50%;
+    background:rgba(255,255,255,.05);
+  }
+  .sellbar-k{
+    position:relative;font-family:var(--mono);font-size:10.5px;
+    letter-spacing:.14em;color:rgba(255,255,255,.55);text-transform:uppercase;
+  }
+  .sellbar-t{
+    position:relative;display:block;margin-top:9px;
+    font-size:18px;font-weight:700;letter-spacing:-0.035em;line-height:1.35;
+  }
+  .sellbar-d{
+    position:relative;display:block;margin-top:8px;
+    font-size:13px;color:rgba(255,255,255,.72);letter-spacing:-0.015em;
+  }
+  .sellbar-a{
+    position:relative;display:inline-block;margin-top:16px;
+    font-size:13.5px;font-weight:700;
+    border-bottom:1.5px solid rgba(255,255,255,.45);padding-bottom:3px;
+  }
+  .sellbar:hover .sellbar-a{border-bottom-color:#fff}
+
   .state{padding:40px 0;text-align:center;font-size:13.5px;color:var(--ink-3);letter-spacing:-0.015em}
 
   footer{padding:30px 0 20px;font-size:12px;color:var(--ink-3);letter-spacing:-0.01em;line-height:1.7}
@@ -162,6 +192,13 @@
     <button class="btn-ghost wide" onclick="openSheet(null)">원하는 차 알려주기</button>
   </section>
 
+  <button class="sellbar" onclick="openSell()">
+    <span class="sellbar-k">Buy</span>
+    <span class="sellbar-t">타시던 차는<br>저희가 사겠습니다</span>
+    <span class="sellbar-d">벤츠 인증중고차 딜러가 직접 매입합니다. 차량 정보만 남겨주시면 시세를 확인해 연락드립니다.</span>
+    <span class="sellbar-a">내차팔기 문의하기 →</span>
+  </button>
+
   <footer>
     <hr>
     임직원 및 소개 고객 혜택은 계약 시 재직 확인 후 적용됩니다. 차량 상태와 가격은 실시간 재고에 따라 달라질 수 있습니다.<br>
@@ -194,6 +231,11 @@
     <input id="f-tel" type="tel" inputmode="numeric" placeholder="010-0000-0000">
     <label for="f-car">관심 차량</label>
     <input id="f-car" type="text" placeholder="모델명 또는 원하는 조건">
+
+    <div id="sellKmWrap" hidden>
+      <label for="f-km">주행거리</label>
+      <input id="f-km" type="text" inputmode="numeric" placeholder="예: 62,000km">
+    </div>
     <label for="f-ref">소개해주신 분 (선택)</label>
     <input id="f-ref" type="text" placeholder="소속 · 이름">
     <label for="f-memo">남기실 말 (선택)</label>
@@ -336,6 +378,7 @@ function render(){
           <div class="more-inner">
             <dl>
               <div class="detail"><dt>차량번호</dt><dd>${c.차량번호 || '–'}</dd></div>
+              <div class="detail"><dt>최초등록</dt><dd>${c.차량등록년월일 || '–'}</dd></div>
               <div class="detail"><dt>주행거리</dt><dd>${won(c.주행)} km</dd></div>
               <div class="detail"><dt>외장 색상</dt><dd>${c.외장색상 || '–'}</dd></div>
               <div class="detail"><dt>내장 색상</dt><dd>${c.내장색상 || '–'}</dd></div>
@@ -360,25 +403,53 @@ function toggleMore(i, btn){
 }
 
 /* ── 문의 ──────────────────────────────────── */
+let MODE = '매물문의';   // 매물문의 | 차량요청 | 내차팔기
+
+function openSell(){ openSheet('sell'); }
+
 function openSheet(i){
   document.getElementById('sheetForm').hidden = false;
   document.getElementById('sheetDone').hidden = true;
 
-  const lock = document.getElementById('carLockWrap');
+  const lock   = document.getElementById('carLockWrap');
+  const kmWrap = document.getElementById('sellKmWrap');
+  const carLbl = document.querySelector('label[for="f-car"]');
+  const carIn  = document.getElementById('f-car');
+  const memoIn = document.getElementById('f-memo');
 
-  if (i === null){
+  lock.hidden = true;
+  kmWrap.hidden = true;
+  document.getElementById('f-plate').value = '';
+
+  if (i === 'sell'){
+    MODE = '내차팔기';
+    document.getElementById('sheetTitle').textContent = '내차팔기 문의';
+    document.getElementById('sheetSub').textContent = '차량 정보를 남겨주시면 매입 담당자가 시세를 확인해 연락드립니다.';
+    carLbl.textContent = '차량 정보';
+    carIn.placeholder = '예: E 250 2021년식';
+    carIn.value = '';
+    memoIn.placeholder = '사고 여부, 옵션, 희망 매각 시기 등';
+    kmWrap.hidden = false;
+
+  } else if (i === null){
+    MODE = '차량요청';
     document.getElementById('sheetTitle').textContent = '원하는 차 알려주기';
     document.getElementById('sheetSub').textContent = '찾으시는 모델과 예산을 남겨주시면 입고 시 먼저 연락드립니다.';
-    document.getElementById('f-car').value = '';
-    document.getElementById('f-plate').value = '';
-    lock.hidden = true;
+    carLbl.textContent = '관심 차량';
+    carIn.placeholder = '모델명 또는 원하는 조건';
+    carIn.value = '';
+    memoIn.placeholder = '연락 가능한 시간대, 예산 등';
+
   } else {
+    MODE = '매물문의';
     const c = CARS[i];
     document.getElementById('sheetTitle').textContent = '문의 남기기';
     document.getElementById('sheetSub').textContent = c.차명 + ' 차량으로 문의를 남깁니다.';
-    document.getElementById('f-car').value = c.차명;
+    carLbl.textContent = '관심 차량';
+    carIn.value = c.차명;
     document.getElementById('f-plate').value = c.차량번호 || '';
     lock.hidden = !c.차량번호;
+    memoIn.placeholder = '연락 가능한 시간대, 예산 등';
   }
 
   document.getElementById('f-ref').value = pretty(ref || myRef());
@@ -399,7 +470,9 @@ function submitLead(){
   const refVal  = document.getElementById('f-ref').value.trim() || ref || '';
   const plate   = document.getElementById('f-plate').value.trim();
   const carName = document.getElementById('f-car').value.trim();
-  /* 차량번호는 시트의 별도 열로 들어갑니다 */
+  const km      = document.getElementById('f-km').value.trim();
+  let   memo    = document.getElementById('f-memo').value.trim();
+  if (MODE === '내차팔기' && km) memo = ('주행 ' + km + (memo ? ' / ' + memo : ''));
 
   const btn = document.getElementById('btnSend');
   btn.disabled = true; btn.textContent = '보내는 중…';
@@ -410,18 +483,22 @@ function submitLead(){
     body: JSON.stringify({
       name: name,
       tel: tel,
+      type: MODE,
       car: carName,
       plate: plate,
-      memo: document.getElementById('f-memo').value.trim(),
+      memo: memo,
       ref: refVal
     })
   })
   .then(r => r.json())
   .then(r => {
     if (!r.ok) throw new Error(r.error);
-    document.getElementById('doneSub').textContent = refVal
-      ? pretty(refVal) + '님께도 진행 상황을 알려드립니다.'
-      : '담당자가 확인 후 영업일 기준 하루 안에 연락드립니다.';
+    document.getElementById('doneSub').textContent =
+      MODE === '내차팔기'
+        ? '매입 담당자가 시세 확인 후 연락드립니다.'
+        : (refVal
+            ? pretty(refVal) + '님께도 진행 상황을 알려드립니다.'
+            : '담당자가 확인 후 영업일 기준 하루 안에 연락드립니다.');
     document.getElementById('sheetForm').hidden = true;
     document.getElementById('sheetDone').hidden = false;
   })
